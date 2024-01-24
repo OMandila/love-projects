@@ -1,32 +1,48 @@
-![CI logo](https://codeinstitute.s3.amazonaws.com/fullstack/ci_logo_small.png)
+# Love-Projects - Command-Line Project Management Tool
 
-Welcome,
+Love-Projects is a Python-based command-line application designed to simplify the life of project managers. It provides an efficient way to track project metrics and KPIs, with easy-to-use CLI navigation and powerful data handling capabilities.
 
-This is the Code Institute student template for deploying your third portfolio project, the Python command-line project. The last update to this file was: **March 14, 2023**
+## Features
 
-## Reminders
+- **CLI-Based Navigation**: User-friendly text-based menu system for easy navigation.
+- **Data Import/Export**: Seamlessly import and export project data from/to Excel or CSV files.
+- **Analytics Functions**: Calculate mean, median, and mode for various project metrics.
+- **Alerts for Deadlines**: Set and receive alerts for upcoming project deadlines and milestones.
 
-- Your code must be placed in the `run.py` file
-- Your dependencies must be placed in the `requirements.txt` file
-- Do not edit any of the other files or your code may not deploy properly
+## Getting Started
 
-## Creating the Heroku app
+### Prerequisites
 
-When you create the app, you will need to add two buildpacks from the _Settings_ tab. The ordering is as follows:
+- Python 3.6 or higher
+- Pip for Python package installation
 
-1. `heroku/python`
-2. `heroku/nodejs`
+### Installation
 
-You must then create a _Config Var_ called `PORT`. Set this to `8000`
+1. Clone the repository:
+git clone https://github.com/OMandila/love-projects.git
+2. Navigate to the love-projects directory:
+cd love-projects
+3. Install required packages:
+pip install -r requirements.txt
 
-If you have credentials, such as in the Love Sandwiches project, you must create another _Config Var_ called `CREDS` and paste the JSON into the value field.
+### Usage
 
-Connect your GitHub repository and deploy as normal.
+Run the tool using Python: python love-projects.py
+Follow the on-screen prompts to navigate through the options.
 
-## Constraints
+## Contributing
 
-The deployment terminal is set to 80 columns by 24 rows. That means that each line of text needs to be 80 characters or less otherwise it will be wrapped onto a second line.
+Contributions to Love-Projects are welcome by submitting pull requests.
+
+## License
+
+This project is licensed under the MIT License.
+
+## Acknowledgments
+
+- Code Institute for the inspiration.
+- All contributors who spend their valuable time to improve this tool.
 
 ---
 
-Happy coding!
+Love-Projects - Making project management more manageable, one command at a time.
