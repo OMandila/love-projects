@@ -75,8 +75,7 @@ def define_a_project():
     try:
         define = SHEET.worksheet("define")
         define.clear() # Clear the entire sheet
-        data.append({"Attribute":"Value",
-                     "project_name": project_name, 
+        data.append({"project_name": project_name, 
                      "project_description": description, 
                      "start_date": start_date_str, 
                      "finish_date": finish_date_str, 
@@ -103,9 +102,9 @@ def define_project_tasks():
     """
     print("Defining project tasks...")
 
-    tasks = []
-    task_leads = []
-    estimate_task_days = []
+    tasks = ["Project_tasks"]
+    task_leads = ["task_leads"]
+    estimate_task_days = ["estimate_task_days"]
 
     # Input task details
     while True:
@@ -147,6 +146,70 @@ def define_project_tasks():
     except Exception as e:
         print(f"Failed to add task details to the Google Sheet: {e}")
 
+def define_project_stakeholders():
+    """
+    Get details of project stakeholders from the user.
+    Run a while loop to collect a valid strings of data from the user
+    via the terminal.
+    The loop will repeat until the function captures all valid data.
+
+    """
+    print("Defining project stakeholders...")
+
+    names = ["stakeholder_names"]
+    roles = ["stakeholder_title_roles"]
+    influences = ["stakeholder_influence"]
+    interests = ["stakeholder_interest"]
+
+    # Input stakeholder details
+    while True:
+        print("Enter your project stakeholders one after the other: ")
+        try:
+            name = input("Enter stakeholder's first name: ")
+            if not name:
+                print("Stakeholder name is required.")
+                continue
+            else: 
+                role = input("Enter title or role of the stakeholder: ")
+                if not role:
+                    print("Stakeholder's title or role is required")
+                    continue
+                else:
+                    influence = int(input("Enter as a number the influence of the stakeholder to the project (3-high, 2-medium, 1-low): "))
+                    if not influence:
+                        print("The stakeholder's influence to the project is required")
+                        continue
+                    else:
+                        interest = int(input("Enter as a number the interest of the stakeholder to the project (3-high, 2-medium, 1-low): "))
+                        if not interest:
+                            print("The stakeholder's interest to the project is required")
+                            continue
+
+            names.append(name)
+            roles.append(role)
+            influences.append(influence)
+            interests.append(interest)
+
+            another_stakeholder = input("Enter another stakeholder? Y/N\n").lower()
+            if another_stakeholder == "n":
+                break
+
+        except ValueError as e:
+            print(f"There was an issue: {e}")
+            
+    # Access the worksheet and add stakeholders details
+    try:
+        stakeholders = SHEET.worksheet("stakeholders")
+        stakeholders.clear() # Clear the entire sheet
+        stakeholders.append_row(names) # Append it as a new row in the sheet
+        stakeholders.append_row(roles) # Append it as a new row in the sheet
+        stakeholders.append_row(influences) # Append it as a new row in the sheet
+        stakeholders.append_row(interests) # Append it as a new row in the sheet
+        print("Stakeholders defined successfully!")
+    except Exception as e:
+        print(f"Failed to add task details to the Google Sheet: {e}")
+
 
 # define_a_project()
-define_project_tasks()
+# define_project_tasks()
+define_project_stakeholders()
