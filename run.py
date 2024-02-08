@@ -16,8 +16,7 @@ SHEET = GSPREAD_CLIENT.open('love_projects')
 def define_a_project():
     """
     Get details of a new project from the user.
-    Run a while loop to collect a valid strings of data from the user
-    via the terminal.
+    Run a while loop to collect a valid strings of data from the user via the terminal.
     The loop will repeat until the function captures all valid data.
 
     """
@@ -95,16 +94,15 @@ def define_a_project():
 def define_project_tasks():
     """
     Get details of project tasks from the user.
-    Run a while loop to collect a valid strings of data from the user
-    via the terminal.
+    Run a while loop to collect a valid strings of data from the user via the terminal.
     The loop will repeat until the function captures all valid data.
 
     """
     print("Defining project tasks...")
 
-    tasks = ["Project_tasks"]
-    task_leads = ["task_leads"]
-    estimate_task_days = ["estimate_task_days"]
+    worksheet = SHEET.worksheet("tasks")
+    worksheet.clear() # Clear the entire sheet
+    worksheet.append_row(["Task","Task lead","Task duration in weeks"])
 
     # Input task details
     while True:
@@ -120,13 +118,12 @@ def define_project_tasks():
                     print("Task lead first name is required")
                     continue
                 else:
-                    estimate_days_per_task = int(input("Enter estimate days for the task: "))
-                    if not estimate_days_per_task:
+                    estimate_weeks_per_task = int(input("Enter estimate weeks for the task: "))
+                    if not estimate_weeks_per_task:
                         print("Estimation of task duration is required")
                         continue
-            tasks.append(task)
-            task_leads.append(task_lead)
-            estimate_task_days.append(estimate_days_per_task)
+            data = [task,task_lead,estimate_weeks_per_task]
+            update_sheet(data, "tasks")
 
             another_task = input("Enter another task? Y/N\n").lower()
             if another_task == "n":
@@ -134,32 +131,32 @@ def define_project_tasks():
 
         except ValueError as e:
             print(f"There was an issue: {e}")
-            
-    # Access the worksheet and add task details
+
+def update_sheet(data, worksheet):
+    """
+    Add all data parsed to the function in the specified worksheet.
+
+    """
+    # Access the worksheet and add data
     try:
-        tasks_sheet = SHEET.worksheet("tasks")
-        tasks_sheet.clear() # Clear the entire sheet
-        tasks_sheet.append_row(tasks) # Append it as a new row in the sheet
-        tasks_sheet.append_row(task_leads) # Append it as a new row in the sheet
-        tasks_sheet.append_row(estimate_task_days) # Append it as a new row in the sheet
-        print("Tasks defined successfully!")
+        worksheet = SHEET.worksheet(worksheet)
+        worksheet.append_row(data) # Append it as a new row in the sheet
+        print("Data added successfully!")
     except Exception as e:
         print(f"Failed to add task details to the Google Sheet: {e}")
 
 def define_project_stakeholders():
     """
     Get details of project stakeholders from the user.
-    Run a while loop to collect a valid strings of data from the user
-    via the terminal.
+    Run a while loop to collect a valid strings of data from the user via the terminal.
     The loop will repeat until the function captures all valid data.
 
     """
     print("Defining project stakeholders...")
 
-    names = ["stakeholder_names"]
-    roles = ["stakeholder_title_roles"]
-    influences = ["stakeholder_influence"]
-    interests = ["stakeholder_interest"]
+    worksheet = SHEET.worksheet("stakeholders")
+    worksheet.clear() # Clear the entire sheet
+    worksheet.append_row(["Stakeholder name","Stakeholder role","Influence to the project","Interest in the project"])
 
     # Input stakeholder details
     while True:
@@ -180,15 +177,21 @@ def define_project_stakeholders():
                         print("The stakeholder's influence to the project is required")
                         continue
                     else:
-                        interest = int(input("Enter as a number the interest of the stakeholder to the project (3-high, 2-medium, 1-low): "))
-                        if not interest:
-                            print("The stakeholder's interest to the project is required")
+                        if influence not in [1, 2, 3]:
+                            print("The stakeholder's influence to the project is required as a number (1, 2, or 3).")
                             continue
+                        else:
+                            interest = int(input("Enter as a number the interest of the stakeholder to the project (3-high, 2-medium, 1-low): "))
+                            if not interest:
+                                print("The stakeholder's interest to the project is required")
+                                continue
+                            else:
+                                if influence not in [1, 2, 3]:
+                                    print("The stakeholder's interest to the project is required as a number (1, 2, or 3).")
+                                    continue
 
-            names.append(name)
-            roles.append(role)
-            influences.append(influence)
-            interests.append(interest)
+            data = [name,role,influence,interest]
+            update_sheet(data, "stakeholders")
 
             another_stakeholder = input("Enter another stakeholder? Y/N\n").lower()
             if another_stakeholder == "n":
@@ -196,36 +199,32 @@ def define_project_stakeholders():
 
         except ValueError as e:
             print(f"There was an issue: {e}")
-            
-    # Access the worksheet and add stakeholders details
-    try:
-        stakeholders = SHEET.worksheet("stakeholders")
-        stakeholders.clear() # Clear the entire sheet
-        stakeholders.append_row(names) # Append it as a new row in the sheet
-        stakeholders.append_row(roles) # Append it as a new row in the sheet
-        stakeholders.append_row(influences) # Append it as a new row in the sheet
-        stakeholders.append_row(interests) # Append it as a new row in the sheet
-        print("Stakeholders defined successfully!")
-    except Exception as e:
-        print(f"Failed to add task details to the Google Sheet: {e}")
+
+def define_project_risks():
+    """
+    Get details of project risks from the user.
+    Run a while loop to collect a valid strings of data from the user via the terminal.
+    The loop will repeat until the function captures all valid data.
+
+    """
+    print("Defining project risks...")
 
 def determine_critical_path():
     """
     Get details of project tasks order from the user.
-    Run a while loop to collect a valid strings of data from the user
-    via the terminal.
+    Run a while loop to collect a valid strings of data from the user via the terminal.
     The loop will repeat until the function captures all valid data.
-    The function will then determine which tasks are on the critical path
-    and display these to the user
+    The function will then determine which tasks are on the critical path and display these to the user
 
     """
     print("Determining project critical path...")
 
 def main():
     # define_a_project()
-    # define_project_stakeholders()
-    # define_project_tasks()
-    determine_critical_path()
+    define_project_stakeholders()
+    #define_project_tasks()
+    #define_project_risks()
+    # determine_critical_path()
 
 print("\n\n                                          Hi, My name is Critical_Path.")
 print("                                          I am your Projects Assistant.")
@@ -233,6 +232,7 @@ print("                             1.)  I will help you define and design your 
 print("                   2.)  I will also help you determine the critical path for your project.")
 print("           3.)  I will do this by brainstorming with you a set of questions to collect project data.")
 print("  4.)  I will later present you the data in a csv that you can feed into your preferred project management tool.\n\n")
+
 proceed = input("Sounds good? Y/N: ").lower()
 while True:
     if proceed != "n":
