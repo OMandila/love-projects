@@ -61,7 +61,7 @@ def define_a_project():
         try:
             available_budget = int(input("Enter available budget for the project in EUR: "))
             if not available_budget: # This checks for an empty string
-                raise ValueError("The Project budget is required.")
+                print("The Project budget is required.")
             else:
                 break
         except ValueError as e:
@@ -74,8 +74,7 @@ def define_a_project():
     # Access the worksheet and add project details
     try:
         define = SHEET.worksheet("define")
-        # Clear the entire sheet
-        define.clear()
+        define.clear() # Clear the entire sheet
         data.append({"Attribute":"Value",
                      "project_name": project_name, 
                      "project_description": description, 
@@ -92,6 +91,62 @@ def define_a_project():
                 define.append_row(row) # Append it as a new row in the sheet
         print("Project defined successfully!")
     except Exception as e:
-        print(f"Failed to add project details to Google Sheet: {e}")
+        print(f"Failed to add Project details to the Google Sheet: {e}")
 
-define_a_project()
+def define_project_tasks():
+    """
+    Get details of project tasks from the user.
+    Run a while loop to collect a valid strings of data from the user
+    via the terminal.
+    The loop will repeat until the function captures all valid data.
+
+    """
+    print("Defining project tasks...")
+
+    tasks = []
+    task_leads = []
+    estimate_task_days = []
+
+    # Input task details
+    while True:
+        print("Enter your project tasks one after the other: ")
+        try:
+            task = input("Enter task name: ")
+            if not task:
+                print("Task name is required.")
+                continue
+            else: 
+                task_lead = input("Enter first name of task lead: ")
+                if not task_lead:
+                    print("Task lead first name is required")
+                    continue
+                else:
+                    estimate_days_per_task = int(input("Enter estimate days for the task: "))
+                    if not estimate_days_per_task:
+                        print("Estimation of task duration is required")
+                        continue
+            tasks.append(task)
+            task_leads.append(task_lead)
+            estimate_task_days.append(estimate_days_per_task)
+
+            another_task = input("Enter another task? Y/N\n").lower()
+            if another_task == "n":
+                break
+
+        except ValueError as e:
+            print(f"There was an issue: {e}")
+            
+    # Access the worksheet and add task details
+    try:
+        tasks_sheet = SHEET.worksheet("tasks")
+        tasks_sheet.clear() # Clear the entire sheet
+        tasks_sheet.append_row(tasks) # Append it as a new row in the sheet
+        tasks_sheet.append_row(task_leads) # Append it as a new row in the sheet
+        tasks_sheet.append_row(estimate_task_days) # Append it as a new row in the sheet
+        print("Tasks defined successfully!")
+    except Exception as e:
+        print(f"Failed to add task details to the Google Sheet: {e}")
+
+
+# define_a_project()
+define_project_tasks()
