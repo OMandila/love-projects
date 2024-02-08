@@ -102,7 +102,7 @@ def define_project_tasks():
 
     worksheet = SHEET.worksheet("tasks")
     worksheet.clear() # Clear the entire sheet
-    worksheet.append_row(["Task","Task lead","Task duration in weeks"])
+    worksheet.append_row(["Task","Task_lead","Task_duration_weeks"])
 
     # Input task details
     while True:
@@ -125,7 +125,7 @@ def define_project_tasks():
             data = [task,task_lead,estimate_weeks_per_task]
             update_sheet(data, "tasks")
 
-            another_task = input("Enter another task? Y/N\n").lower()
+            another_task = input("Enter another task? Y/N : ").lower()
             if another_task == "n":
                 break
 
@@ -156,7 +156,7 @@ def define_project_stakeholders():
 
     worksheet = SHEET.worksheet("stakeholders")
     worksheet.clear() # Clear the entire sheet
-    worksheet.append_row(["Stakeholder name","Stakeholder role","Influence to the project","Interest in the project"])
+    worksheet.append_row(["Stakeholder_name","Stakeholder_role","Influence_to_project","Interest_in_project"])
 
     # Input stakeholder details
     while True:
@@ -186,14 +186,14 @@ def define_project_stakeholders():
                                 print("The stakeholder's interest to the project is required")
                                 continue
                             else:
-                                if influence not in [1, 2, 3]:
+                                if interest not in [1, 2, 3]:
                                     print("The stakeholder's interest to the project is required as a number (1, 2, or 3).")
                                     continue
 
             data = [name,role,influence,interest]
             update_sheet(data, "stakeholders")
 
-            another_stakeholder = input("Enter another stakeholder? Y/N\n").lower()
+            another_stakeholder = input("Enter another stakeholder? Y/N : ").lower()
             if another_stakeholder == "n":
                 break
 
@@ -208,6 +208,52 @@ def define_project_risks():
 
     """
     print("Defining project risks...")
+    
+    worksheet = SHEET.worksheet("risks")
+    worksheet.clear() # Clear the entire sheet
+    worksheet.append_row(["Risk_title","Risk_description","Risk_probability","Risk_impact", "Risk_mitigation"])
+
+    # Input risk details
+    while True:
+        print("Enter your project risks one after the other: ")
+        try:
+            title = input("Enter risk's title: ")
+            if not title:
+                print("Risk title is required.")
+                continue
+            else: 
+                description = input("Enter detailed description of the risk: ")
+                if not description:
+                    print("Risk description is required")
+                    continue
+                else:
+                    probability = int(input("Enter as a number the probability of the risk to the project (3-high, 2-medium, 1-low): "))
+                    if not probability:
+                        print("The risk's probability to the project is required")
+                        continue
+                    else:
+                        if probability not in [1, 2, 3]:
+                            print("The risk's probability to the project is required as a number (1, 2, or 3).")
+                            continue
+                        else:
+                            impact = int(input("Enter as a number the impact of the risk to the project (3-high, 2-medium, 1-low): "))
+                            if not impact:
+                                print("The risk's impact to the project is required")
+                                continue
+                            else:
+                                if impact not in [1, 2, 3]:
+                                    print("The risk's impact to the project is required as a number (1, 2, or 3).")
+                                    continue
+
+            data = [title,description,probability,impact]
+            update_sheet(data, "risks")
+
+            another_risk = input("Enter another risk? Y/N : ").lower()
+            if another_risk == "n":
+                break
+
+        except ValueError as e:
+            print(f"There was an issue: {e}")
 
 def determine_critical_path():
     """
@@ -221,9 +267,9 @@ def determine_critical_path():
 
 def main():
     # define_a_project()
-    define_project_stakeholders()
-    #define_project_tasks()
-    #define_project_risks()
+    # define_project_stakeholders()
+    # define_project_tasks()
+    define_project_risks()
     # determine_critical_path()
 
 print("\n\n                                          Hi, My name is Critical_Path.")
@@ -238,3 +284,4 @@ while True:
     if proceed != "n":
         main()
     break
+
