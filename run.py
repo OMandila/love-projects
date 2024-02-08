@@ -209,7 +209,32 @@ def define_project_stakeholders():
     except Exception as e:
         print(f"Failed to add task details to the Google Sheet: {e}")
 
+def determine_critical_path():
+    """
+    Get details of project tasks order from the user.
+    Run a while loop to collect a valid strings of data from the user
+    via the terminal.
+    The loop will repeat until the function captures all valid data.
+    The function will then determine which tasks are on the critical path
+    and display these to the user
 
-# define_a_project()
-# define_project_tasks()
-define_project_stakeholders()
+    """
+    print("Determining project critical path...")
+
+def main():
+    # define_a_project()
+    # define_project_stakeholders()
+    # define_project_tasks()
+    determine_critical_path()
+
+print("\n\n                                          Hi, My name is Critical_Path.")
+print("                                          I am your Projects Assistant.")
+print("                             1.)  I will help you define and design your project.")
+print("                   2.)  I will also help you determine the critical path for your project.")
+print("           3.)  I will do this by brainstorming with you a set of questions to collect project data.")
+print("  4.)  I will later present you the data in a csv that you can feed into your preferred project management tool.\n\n")
+proceed = input("Sounds good? Y/N: ").lower()
+while True:
+    if proceed != "n":
+        main()
+    break
