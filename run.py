@@ -265,12 +265,58 @@ def determine_critical_path():
     """
     print("Determining project critical path...")
 
+def develop_gantt_chart():
+    """
+    The function will develop a gantt chart for the project using available data
+    """
+    print("Developing the project gantt chart...")
+
+def download_project():
+    """
+    The function will download the csv file containing the project's data
+
+    """
+    print("Downloading project data...")
+
 def main():
-    # define_a_project()
-    # define_project_stakeholders()
-    # define_project_tasks()
-    define_project_risks()
-    # determine_critical_path()
+    print("\nHere are the functionalities available in this app:")
+        
+    functionalities = [
+        "1. Define a Project",
+        "2. Develop a List of Project Stakeholders",
+        "3. Develop a List of Project Tasks",
+        "4. Develop a List of Project Risks",
+        "5. Calculate the Critical Path",
+        "6. Develop a Project Gantt Chart",
+        "7. Download Project Data"
+        ]
+        
+    for func in functionalities:
+        print(func)
+
+    choice = int(input("Please enter the number of the function you'd like to start with (1-7): "))
+        
+    if choice == 1:
+        define_a_project()
+    elif choice == 2:
+        define_project_stakeholders()
+    elif choice == 3:
+        define_project_tasks()
+    elif choice == 4:
+        define_project_risks()
+    elif choice == 5:
+        determine_critical_path()
+    elif choice == 6:
+        develop_gantt_chart()
+    elif choice == 7:
+        # The file_id and destination_folder are predetermined
+        file_id = "your_google_sheet_file_id_here"
+        destination_folder = "your_destination_folder_path_here"
+        download_project(file_id, destination_folder)
+    else:
+        print("Invalid choice. Please restart the program and select a valid option.")
+
+
 
 print("\n\n                                          Hi, My name is Critical_Path.")
 print("                                          I am your Projects Assistant.")
