@@ -134,7 +134,7 @@ def define_project_tasks():
 
 def update_sheet(data, worksheet):
     """
-    Add all data parsed to the function in the specified worksheet.
+    Add all data passed to the function in the specified worksheet.
 
     """
     # Access the worksheet and add data
@@ -217,7 +217,7 @@ def define_project_risks():
     while True:
         print("Enter your project risks one after the other: ")
         try:
-            title = input("Enter risk's title: ")
+            title = input("Enter risk title: ")
             if not title:
                 print("Risk title is required.")
                 continue
@@ -264,6 +264,41 @@ def determine_critical_path():
 
     """
     print("Determining project critical path...")
+    print("Let's start by planning the running order of project tasks...")
+
+    # Access the worksheet with tasks
+    tasks_sheet = SHEET.worksheet("tasks")
+    tasks = tasks_sheet.get_all_records()  # Assumes first row is header
+
+    # Display tasks to the user
+    print("Current project tasks:")
+    # for task in tasks:
+    task_numbers = []
+    for i, task in enumerate(tasks, start=1):
+        task_number = chr(64 + i) if i <= 26 else chr(64 + i // 26) + str(i % 26) # Task numbering logic to display unique numbers for up to 52 tasks
+        print(f"- {task_number}: {task['Task']} FOR {task['Task_duration_weeks']} WEEKS.")
+        task_numbers.append(task_number)
+
+    # Create the TasksOrder worksheet
+    try:
+        order_sheet = SHEET.worksheet("TasksOrder")
+        order_sheet.clear()
+        order_sheet.append_row(["task_number", "task", "task_duration_weeks", "predecessors"])
+    except gspread.WorksheetNotFound:
+        order_sheet = SHEET.add_worksheet(title="TasksOrder", rows="100", cols="4")
+
+    # Collect and add task order information
+    for task_number, task in zip(task_numbers,tasks):
+        print(f"Task number {task_number}:- {task["Task"]} FOR {task["Task_duration_weeks"]} WEEKS.")
+        predecessors = input("Enter predecessor task numbers (separated by comma, leave blank if none): ")
+        
+        # Prepare data
+        data = [task_number, task["Task"], task["Task_duration_weeks"], predecessors]
+
+        # Add data to the TasksOrder worksheet
+        order_sheet.append_row(data)
+
+    print("Tasks running order planned successfully!")
 
 def develop_gantt_chart():
     """
