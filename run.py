@@ -72,8 +72,7 @@ def define_a_project():
     
     # Access the worksheet and add project details
     try:
-        define = SHEET.worksheet("define")
-        define.clear() # Clear the entire sheet
+        define = clear_sheet("define")
         data.append({"project_name": project_name, 
                      "project_description": description, 
                      "start_date": start_date_str, 
@@ -86,7 +85,7 @@ def define_a_project():
                 if isinstance(value, list):
                     value = ','.join(map(str, value))
                 row = [key, value]  # Create a list from the key-value pair
-                define.append_row(row) # Append it as a new row in the sheet
+                update_sheet(row, define) # Append it as a new row in the sheet
         print("Project defined successfully!")
     except Exception as e:
         print(f"Failed to add Project details to the Google Sheet: {e}")
@@ -100,8 +99,8 @@ def define_project_tasks():
     """
     print("Defining project tasks...")
 
-    worksheet = SHEET.worksheet("tasks")
-    worksheet.clear() # Clear the entire sheet
+    worksheet = clear_sheet("tasks")
+    worksheet = SHEET.worksheet(worksheet)
     worksheet.append_row(["Task","Task_lead","Task_duration_weeks"])
 
     # Input task details
@@ -123,7 +122,7 @@ def define_project_tasks():
                         print("Estimation of task duration is required")
                         continue
             data = [task,task_lead,estimate_weeks_per_task]
-            update_sheet(data, "tasks")
+            update_sheet(data, worksheet.title)
 
             another_task = input("Enter another task? Y/N : ").lower()
             if another_task == "n":
@@ -131,6 +130,18 @@ def define_project_tasks():
 
         except ValueError as e:
             print(f"There was an issue: {e}")
+
+def clear_sheet(worksheet):
+    """
+    Create worksheet with the same name or clear all data in the worksheet whose name is passed to the function.
+
+    """
+    try:
+        SHEET.worksheet(worksheet).clear()
+    except gspread.WorksheetNotFound:
+        SHEET.add_worksheet(title = worksheet, rows="100", cols="10")        
+    
+    return SHEET.worksheet(worksheet).title
 
 def update_sheet(data, worksheet):
     """
@@ -154,8 +165,8 @@ def define_project_stakeholders():
     """
     print("Defining project stakeholders...")
 
-    worksheet = SHEET.worksheet("stakeholders")
-    worksheet.clear() # Clear the entire sheet
+    worksheet = clear_sheet("stakeholders")
+    worksheet = SHEET.worksheet(worksheet)
     worksheet.append_row(["Stakeholder_name","Stakeholder_role","Influence_to_project","Interest_in_project"])
 
     # Input stakeholder details
@@ -191,7 +202,7 @@ def define_project_stakeholders():
                                     continue
 
             data = [name,role,influence,interest]
-            update_sheet(data, "stakeholders")
+            update_sheet(data, worksheet.title)
 
             another_stakeholder = input("Enter another stakeholder? Y/N : ").lower()
             if another_stakeholder == "n":
@@ -209,8 +220,8 @@ def define_project_risks():
     """
     print("Defining project risks...")
     
-    worksheet = SHEET.worksheet("risks")
-    worksheet.clear() # Clear the entire sheet
+    worksheet = clear_sheet("risks")
+    worksheet = SHEET.worksheet(worksheet)
     worksheet.append_row(["Risk_title","Risk_description","Risk_probability","Risk_impact", "Risk_mitigation"])
 
     # Input risk details
@@ -246,7 +257,7 @@ def define_project_risks():
                                     continue
 
             data = [title,description,probability,impact]
-            update_sheet(data, "risks")
+            update_sheet(data, worksheet.title)
 
             another_risk = input("Enter another risk? Y/N : ").lower()
             if another_risk == "n":
@@ -255,7 +266,7 @@ def define_project_risks():
         except ValueError as e:
             print(f"There was an issue: {e}")
 
-def determine_critical_path():
+def determine_running_order():
     """
     Get details of project tasks order from the user.
     Run a while loop to collect a valid strings of data from the user via the terminal.
@@ -263,12 +274,11 @@ def determine_critical_path():
     The function will then determine which tasks are on the critical path and display these to the user
 
     """
-    print("Determining project critical path...")
-    print("Let's start by planning the running order of project tasks...")
+    print("Determining the running order of project tasks...")
 
     # Access the worksheet with tasks
-    tasks_sheet = SHEET.worksheet("tasks")
-    tasks = tasks_sheet.get_all_records()  # Assumes first row is header
+    taskssheet = SHEET.worksheet("tasks")
+    tasks = taskssheet.get_all_records()  # Assumes first row is header
 
     # Display tasks to the user
     print("Current project tasks:")
@@ -280,12 +290,9 @@ def determine_critical_path():
         task_numbers.append(task_number)
 
     # Create the TasksOrder worksheet
-    try:
-        order_sheet = SHEET.worksheet("TasksOrder")
-        order_sheet.clear()
-        order_sheet.append_row(["task_number", "task", "task_duration_weeks", "predecessors"])
-    except gspread.WorksheetNotFound:
-        order_sheet = SHEET.add_worksheet(title="TasksOrder", rows="100", cols="4")
+    worksheet = clear_sheet("taskorder")
+    worksheet = SHEET.worksheet(worksheet)
+    worksheet.append_row(["task_number", "task", "task_duration_weeks", "predecessors"])
 
     # Collect and add task order information
     for task_number, task in zip(task_numbers,tasks):
@@ -296,9 +303,28 @@ def determine_critical_path():
         data = [task_number, task["Task"], task["Task_duration_weeks"], predecessors]
 
         # Add data to the TasksOrder worksheet
-        order_sheet.append_row(data)
+        update_sheet(data, worksheet.title)
 
     print("Tasks running order planned successfully!")
+
+def determine_critical_path():
+    """
+    The function will determine which tasks are on the critical path and display these to the user
+
+    """
+    print("Determining project critical path...")
+
+    def forward_pass():
+        """
+        calculate the forward pass data for each task
+        
+        """
+    
+    def backward_pass():
+        """
+        calculate the backward pass data for each task
+        
+        """
 
 def develop_gantt_chart():
     """
@@ -315,21 +341,21 @@ def download_project():
 
 def main():
     print("\nHere are the functionalities available in this app:")
-        
     functionalities = [
         "1. Define a Project",
         "2. Develop a List of Project Stakeholders",
         "3. Develop a List of Project Tasks",
         "4. Develop a List of Project Risks",
-        "5. Calculate the Critical Path",
-        "6. Develop a Project Gantt Chart",
-        "7. Download Project Data"
+        "5. Determine the running order for Tasks",
+        "6. Calculate the Critical Path",
+        "7. Develop a Project Gantt Chart",
+        "8. Download Project Data"
         ]
         
     for func in functionalities:
         print(func)
 
-    choice = int(input("Please enter the number of the function you'd like to start with (1-7): "))
+    choice = int(input("Please enter the number of the function you'd like to start with (1-8): "))
         
     if choice == 1:
         define_a_project()
@@ -340,17 +366,18 @@ def main():
     elif choice == 4:
         define_project_risks()
     elif choice == 5:
-        determine_critical_path()
+        determine_running_order()
     elif choice == 6:
-        develop_gantt_chart()
+        determine_critical_path()
     elif choice == 7:
+        develop_gantt_chart()
+    elif choice == 8:
         # The file_id and destination_folder are predetermined
         file_id = "your_google_sheet_file_id_here"
         destination_folder = "your_destination_folder_path_here"
         download_project(file_id, destination_folder)
     else:
         print("Invalid choice. Please restart the program and select a valid option.")
-
 
 
 print("\n\n                                          Hi, My name is Critical_Path.")
@@ -360,7 +387,7 @@ print("                   2.)  I will also help you determine the critical path 
 print("           3.)  I will do this by brainstorming with you a set of questions to collect project data.")
 print("  4.)  I will later present you the data in a csv that you can feed into your preferred project management tool.\n\n")
 
-proceed = input("Sounds good? Y/N: ").lower()
+proceed = input("Should we proceed? Y/N: ").lower()
 while True:
     if proceed != "n":
         main()
