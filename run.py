@@ -296,7 +296,7 @@ def determine_running_order():
 
     # Collect and add task order information
     for task_number, task in zip(task_numbers,tasks):
-        print(f"Task number {task_number}:- {task["Task"]} FOR {task["Task_duration_weeks"]} WEEKS.")
+        print(f"Task number {task_number}:- {task['Task']} FOR {task['Task_duration_weeks']} WEEKS.")
         predecessors = input("Enter predecessor task numbers (separated by comma, leave blank if none): ")
         
         # Prepare data
